@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://daymark-daily.vercel.app"),
+  metadataBase: new URL("https://daymark.lol"),
   title: { default: "Daymark — A private daily journal", template: "%s · Daymark" },
   description: "Daymark is a private daily journal for your words, photos, small promises, and the patterns that make a life.",
   keywords: ["daily journal", "private journal", "photo journal", "weekly review", "habit tracker", "daily reflection"],

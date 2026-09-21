@@ -3,7 +3,7 @@
 <p align="center"><strong>a private, deliberate place for your days.</strong></p>
 
 <p align="center">
-  <a href="https://daymark-daily.vercel.app">live app</a> ·
+  <a href="https://daymark.lol">live app</a> ·
   <a href="#getting-started">getting started</a> ·
   <a href="#deployment">deployment</a> ·
   <a href="#contributing">contributing</a>
@@ -94,7 +94,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## deployment
 
-Daymark runs on Vercel at [daymark-daily.vercel.app](https://daymark-daily.vercel.app).
+Daymark runs on Vercel at [daymark.lol](https://daymark.lol).
 
 To deploy your own instance:
 
