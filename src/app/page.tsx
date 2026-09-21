@@ -1,45 +1,12 @@
 import Link from "next/link";
-import { ArrowUpRight, Bell, Download, Settings, Sparkles } from "lucide-react";
-import { Calendar } from "@/components/calendar";
+import { ArrowUpRight, CalendarDays, Camera, Check, LockKeyhole, Sparkles } from "lucide-react";
 import { Wordmark } from "@/components/brand";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { MarkerPicker } from "@/components/marker-picker";
-import { AccountButton } from "@/components/account-button";
-import { MobileRedirect } from "@/components/mobile-redirect";
 
-export default async function Home() {
+export default async function LandingPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth");
-  const [{ data: profile }, { data: rawEntries }, { data: markers }] = await Promise.all([
-    supabase.from("profiles").select("display_name, time_zone").eq("id", user.id).single(),
-    supabase.from("journal_entries").select("id, entry_date, body, updated_at, journal_images(id, storage_path, position), entry_markers(markers(id, name, color))").eq("user_id", user.id).order("entry_date"),
-    supabase.from("markers").select("id, name, color").eq("user_id", user.id).order("created_at"),
-  ]);
-  const today = new Intl.DateTimeFormat("en-CA", { timeZone: profile?.time_zone ?? "UTC" }).format(new Date());
-  const entries = (rawEntries ?? []).map((entry) => ({ id: entry.id, entryDate: entry.entry_date, body: entry.body, updatedAt: entry.updated_at, images: (entry.journal_images ?? []).map((image) => ({ id: image.id, path: image.storage_path, position: image.position })), markers: entry.entry_markers.flatMap((assignment) => assignment.markers ?? []), status: entry.body.trim() && entry.journal_images.length >= 3 ? "complete" as const : "draft" as const }));
-  const name = profile?.display_name || user.email?.split("@")[0] || "there";
-  return (
-    <main className="min-h-screen px-4 py-4 sm:px-8 sm:py-8"><MobileRedirect/>
-      <div className="mx-auto max-w-6xl">
-        <header className="mb-12 flex items-center justify-between"><Wordmark/><div className="flex items-center gap-2"><Link href="/review" className="icon-button focus-ring" aria-label="Weekly review">↗</Link><Link href="/export" className="icon-button focus-ring" aria-label="Export journal"><Download size={17}/></Link><Link href="/settings" className="icon-button focus-ring" aria-label="Settings"><Settings size={17}/></Link><AccountButton initial={name.charAt(0).toUpperCase()}/></div></header>
-        <section className="mb-10 grid gap-7 lg:grid-cols-[1fr_310px]">
-          <div className="rounded-[2rem] bg-[#222420] px-7 py-9 text-white sm:px-10 sm:py-11">
-            <p className="mb-7 flex items-center gap-2 text-sm text-white/55"><Sparkles size={15} className="text-[#d9f16d]"/> A quiet place for the days that matter.</p>
-            <h1 className="max-w-xl text-4xl font-semibold leading-[.98] tracking-[-.075em] sm:text-6xl">Good evening,<br/><span className="text-[#d9f16d]">{name}.</span></h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-white/65">September 20 is still yours. Take a moment to leave a mark.</p>
-            <Link href={`/journal/${today}`} className="focus-ring mt-8 inline-flex items-center gap-3 rounded-full bg-[#d9f16d] px-5 py-3 text-sm font-semibold text-[#222420] transition hover:bg-[#e6fa90]">Write today <ArrowUpRight size={16}/></Link>
-          </div>
-          <aside className="paper-shadow flex flex-col justify-between rounded-[2rem] border border-[#e8e9e2] bg-white p-7">
-            <div><div className="mb-5 grid h-11 w-11 place-items-center rounded-2xl bg-[#ffdf85]"><Bell size={19}/></div><p className="label">Gentle rhythm</p><h2 className="mt-2 text-xl font-semibold tracking-[-.05em]">A reminder at 8:30 PM.</h2><p className="mt-3 text-sm leading-relaxed text-[#787b72]">We&apos;ll send it to your phone once it&apos;s connected.</p></div>
-            <button className="focus-ring mt-8 self-start text-sm font-semibold underline decoration-[#d9f16d] decoration-4 underline-offset-4">Set your rhythm</button>
-          </aside>
-        </section>
-        <Calendar entries={entries}/>
-        <div className="mt-7"><MarkerPicker markers={markers ?? []}/></div>
-        <footer className="py-8 text-center text-xs text-[#787b72]">Made for showing up, one day at a time.</footer>
-      </div>
-    </main>
-  );
+  if (user) redirect("/dashboard");
+  return <main className="min-h-screen overflow-hidden bg-[#f7f7f3] px-4 py-4 sm:px-8 sm:py-8"><div className="mx-auto max-w-6xl"><header className="flex items-center justify-between"><Wordmark/><Link href="/auth" className="focus-ring rounded-full border border-[#e1e2db] bg-white px-4 py-2.5 text-sm font-semibold transition hover:border-[#222420]">Sign in</Link></header><section className="relative pt-20 text-center sm:pt-28"><div className="absolute left-[4%] top-16 h-28 w-28 rounded-full bg-[#d9f16d]/55 blur-3xl"/><p className="label relative inline-flex items-center gap-2 rounded-full border border-[#e1e2db] bg-white px-3 py-2"><Sparkles size={13} className="text-[#80952e]"/> A calmer way to keep your days</p><h1 className="relative mx-auto mt-7 max-w-4xl text-5xl font-semibold leading-[.92] tracking-[-.085em] sm:text-7xl lg:text-8xl">Make room for<br/><span className="text-[#80952e]">what mattered.</span></h1><p className="relative mx-auto mt-7 max-w-xl text-lg leading-8 text-[#676a62]">Daymark is a private daily journal for your words, photos, small promises, and the patterns that make a life.</p><div className="relative mt-9 flex flex-wrap justify-center gap-3"><Link href="/auth" className="focus-ring inline-flex items-center gap-2 rounded-full bg-[#222420] px-5 py-3.5 text-sm font-semibold text-white">Begin your practice <ArrowUpRight size={16}/></Link><a href="#how-it-works" className="focus-ring rounded-full border border-[#e1e2db] bg-white px-5 py-3.5 text-sm font-semibold">See how it works</a></div></section><section className="paper-shadow relative mx-auto mt-16 max-w-5xl rounded-[2.5rem] border border-[#e1e2db] bg-white p-4 sm:p-7"><div className="rounded-[1.8rem] bg-[#222420] p-7 text-left sm:p-10"><div className="flex items-center justify-between text-white/55"><span className="text-sm font-semibold">Sunday, September 21</span><span className="rounded-full bg-white/10 px-3 py-1 text-xs">Today&apos;s mark</span></div><h2 className="mt-10 max-w-2xl text-3xl font-semibold leading-tight tracking-[-.055em] text-white sm:text-5xl">“The small walk after dinner made the whole day feel softer.”</h2><div className="mt-10 grid grid-cols-3 gap-3"><div className="aspect-square rounded-2xl bg-[#c6d9ab]"/><div className="aspect-square rounded-2xl bg-[#e9bd88]"/><div className="aspect-square rounded-2xl bg-[#a6c5d8]"/></div><div className="mt-7 flex gap-2"><span className="rounded-full bg-[#d9f16d] px-3 py-2 text-xs font-bold text-[#222420]">Walk</span><span className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white">3 promises kept</span></div></div></section><section id="how-it-works" className="py-28"><div className="max-w-xl"><p className="label">A private practice</p><h2 className="mt-3 text-4xl font-semibold tracking-[-.07em] sm:text-5xl">A home for the whole day.</h2></div><div className="mt-12 grid gap-5 md:grid-cols-3"><article className="rounded-[2rem] bg-[#ffdf85] p-7"><CalendarDays size={23}/><h3 className="mt-16 text-2xl font-semibold tracking-[-.05em]">Notice your rhythm.</h3><p className="mt-3 leading-7 text-[#4b4738]">Color markers, daily signals, and a weekly review make consistency visible without turning life into a spreadsheet.</p></article><article className="rounded-[2rem] bg-[#d9f16d] p-7"><Camera size={23}/><h3 className="mt-16 text-2xl font-semibold tracking-[-.05em]">Bring in the moments.</h3><p className="mt-3 leading-7 text-[#43511b]">Pair your phone for photos, or sign in once and use the quiet photo companion whenever you need it.</p></article><article className="rounded-[2rem] bg-[#222420] p-7 text-white"><LockKeyhole size={23} className="text-[#d9f16d]"/><h3 className="mt-16 text-2xl font-semibold tracking-[-.05em]">Keep it yours.</h3><p className="mt-3 leading-7 text-white/65">Your entries are private. Each day has a gentle close, so showing up stays meaningful.</p></article></div></section><section className="rounded-[2.5rem] bg-[#e9ebe3] px-7 py-16 text-center sm:px-12"><p className="label">One day at a time</p><h2 className="mx-auto mt-4 max-w-2xl text-4xl font-semibold tracking-[-.07em] sm:text-6xl">Your life is already happening. Keep a little of it.</h2><Link href="/auth" className="focus-ring mt-8 inline-flex items-center gap-2 rounded-full bg-[#222420] px-5 py-3.5 text-sm font-semibold text-white">Create your Daymark <ArrowUpRight size={16}/></Link></section><footer className="flex items-center justify-between py-8 text-xs text-[#787b72]"><span>© {new Date().getFullYear()} Daymark</span><span className="inline-flex items-center gap-1"><Check size={13}/> Private by default</span></footer></div></main>;
 }

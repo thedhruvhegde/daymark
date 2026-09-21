@@ -3,6 +3,7 @@
 import { Camera, Check, Images, LoaderCircle } from "lucide-react";
 import { use, useRef, useState } from "react";
 import { Mark } from "@/components/brand";
+import { compressImage } from "@/lib/compress-image";
 
 export default function CapturePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
@@ -14,7 +15,8 @@ export default function CapturePage({ params }: { params: Promise<{ token: strin
   async function upload(files: FileList | null) {
     if (!files) return;
     setWorking(true);
-    for (const file of Array.from(files)) {
+    for (const originalFile of Array.from(files)) {
+      const file = await compressImage(originalFile);
       const data = new FormData(); data.set("token", token); data.set("image", file);
       const response = await fetch("/api/capture", { method: "POST", body: data });
       if (!response.ok) { setMessage((await response.json()).error ?? "Upload failed."); break; }

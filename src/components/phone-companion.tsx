@@ -5,6 +5,7 @@ import { Camera, Check, Images, LoaderCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import { MarkerPicker } from "@/components/marker-picker";
 import type { Marker } from "@/lib/types";
+import { compressImage } from "@/lib/compress-image";
 
 type Props = { date: string; markers: Marker[]; selectedMarkerIds: string[]; initialImages: string[]; editable: boolean };
 
@@ -16,7 +17,8 @@ export function PhoneCompanion({ date, markers, selectedMarkerIds, initialImages
   async function upload(files: FileList | null) {
     if (!files || !editable) return;
     setWorking(true);
-    for (const file of Array.from(files)) {
+    for (const originalFile of Array.from(files)) {
+      const file = await compressImage(originalFile);
       const data = new FormData();
       data.set("image", file);
       const response = await fetch(`/api/entries/${date}/images`, { method: "POST", body: data });

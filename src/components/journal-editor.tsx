@@ -6,6 +6,7 @@ import Image from "next/image";
 import { isComplete } from "@/lib/date-window";
 import { MarkerPicker } from "@/components/marker-picker";
 import type { Marker } from "@/lib/types";
+import { compressImage } from "@/lib/compress-image";
 
 type Props = { date: string; initialBody?: string; initialImages?: string[]; markers?: Marker[]; selectedMarkerIds?: string[]; editable: boolean };
 
@@ -25,7 +26,8 @@ export function JournalEditor({ date, initialBody = "", initialImages = [], mark
   const addFiles = async (files: FileList | null) => {
     if (!files || !editable) return;
     setSaving(true);
-    for (const file of Array.from(files)) {
+    for (const originalFile of Array.from(files)) {
+      const file = await compressImage(originalFile);
       const data = new FormData();
       data.set("image", file);
       const response = await fetch(`/api/entries/${date}/images`, { method: "POST", body: data });

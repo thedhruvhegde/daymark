@@ -18,7 +18,7 @@ export default function AuthPage() {
     event.preventDefault(); setError("");
     const client = createClient();
     const result = mode === "sign-in" ? await client.auth.signInWithPassword({ email, password }) : await client.auth.signUp({ email, password, options: { data: { time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone } } });
-    if (result.error) setError(result.error.message); else if (mode === "sign-in") router.push("/"); else setSent(true);
+    if (result.error) setError(result.error.message); else if (mode === "sign-in") router.push("/dashboard"); else setSent(true);
   }
   async function magicLink() {
     setError("");
