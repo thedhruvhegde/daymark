@@ -29,3 +29,10 @@ button { cursor: pointer; }
 .icon-button { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 1px solid var(--line); border-radius: 999px; background: white; transition: .2s ease; }
 .icon-button:hover { border-color: var(--ink); transform: translateY(-1px); }
 .focus-ring:focus-visible { outline: 3px solid var(--lime-deep); outline-offset: 3px; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float { animation: float 5s ease-in-out infinite; }
+.animate-float-slow { animation: float 7s ease-in-out 1s infinite; }
