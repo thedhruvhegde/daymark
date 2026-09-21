@@ -4,22 +4,26 @@ import { Calendar } from "@/components/calendar";
 import { Wordmark } from "@/components/brand";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { MarkerPicker } from "@/components/marker-picker";
+import { AccountButton } from "@/components/account-button";
+import { MobileRedirect } from "@/components/mobile-redirect";
 
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth");
-  const [{ data: profile }, { data: rawEntries }] = await Promise.all([
+  const [{ data: profile }, { data: rawEntries }, { data: markers }] = await Promise.all([
     supabase.from("profiles").select("display_name, time_zone").eq("id", user.id).single(),
-    supabase.from("journal_entries").select("id, entry_date, body, updated_at, journal_images(id, storage_path, position)").eq("user_id", user.id).order("entry_date"),
+    supabase.from("journal_entries").select("id, entry_date, body, updated_at, journal_images(id, storage_path, position), entry_markers(markers(id, name, color))").eq("user_id", user.id).order("entry_date"),
+    supabase.from("markers").select("id, name, color").eq("user_id", user.id).order("created_at"),
   ]);
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: profile?.time_zone ?? "UTC" }).format(new Date());
-  const entries = (rawEntries ?? []).map((entry) => ({ id: entry.id, entryDate: entry.entry_date, body: entry.body, updatedAt: entry.updated_at, images: (entry.journal_images ?? []).map((image) => ({ id: image.id, path: image.storage_path, position: image.position })), status: entry.body.trim() && entry.journal_images.length >= 3 ? "complete" as const : "draft" as const }));
+  const entries = (rawEntries ?? []).map((entry) => ({ id: entry.id, entryDate: entry.entry_date, body: entry.body, updatedAt: entry.updated_at, images: (entry.journal_images ?? []).map((image) => ({ id: image.id, path: image.storage_path, position: image.position })), markers: entry.entry_markers.flatMap((assignment) => assignment.markers ?? []), status: entry.body.trim() && entry.journal_images.length >= 3 ? "complete" as const : "draft" as const }));
   const name = profile?.display_name || user.email?.split("@")[0] || "there";
   return (
-    <main className="min-h-screen px-4 py-4 sm:px-8 sm:py-8">
+    <main className="min-h-screen px-4 py-4 sm:px-8 sm:py-8"><MobileRedirect/>
       <div className="mx-auto max-w-6xl">
-        <header className="mb-12 flex items-center justify-between"><Wordmark/><div className="flex items-center gap-2"><Link href="/export" className="icon-button focus-ring" aria-label="Export journal"><Download size={17}/></Link><button className="focus-ring grid h-10 w-10 place-items-center rounded-full bg-[#222420] text-sm font-semibold text-white" aria-label="Account">D</button></div></header>
+        <header className="mb-12 flex items-center justify-between"><Wordmark/><div className="flex items-center gap-2"><Link href="/export" className="icon-button focus-ring" aria-label="Export journal"><Download size={17}/></Link><AccountButton initial={name.charAt(0).toUpperCase()}/></div></header>
         <section className="mb-10 grid gap-7 lg:grid-cols-[1fr_310px]">
           <div className="rounded-[2rem] bg-[#222420] px-7 py-9 text-white sm:px-10 sm:py-11">
             <p className="mb-7 flex items-center gap-2 text-sm text-white/55"><Sparkles size={15} className="text-[#d9f16d]"/> A quiet place for the days that matter.</p>
@@ -33,6 +37,7 @@ export default async function Home() {
           </aside>
         </section>
         <Calendar entries={entries}/>
+        <div className="mt-7"><MarkerPicker markers={markers ?? []}/></div>
         <footer className="py-8 text-center text-xs text-[#787b72]">Made for showing up, one day at a time.</footer>
       </div>
     </main>

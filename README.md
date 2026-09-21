@@ -15,7 +15,8 @@ Daymark is an open-source daily journal that makes reflection a small, repeatabl
 
 - **one day at a time** — journal days become read-only 24 hours after they end in your chosen time zone.
 - **private by default** — Supabase row-level security and private storage scope every journal to its owner.
-- **phone photo companion** — scan a short-lived QR code from desktop to add camera or library photos from a phone.
+- **markers that build consistency** — create reusable color-coded markers and see their dots across the calendar.
+- **phone photo companion** — sign in once on a phone to add photos and markers; QR pairing remains available as a quick alternative.
 - **a complete daily record** — pair unlimited writing with at least three square photographs.
 - **your archive, yours to keep** — export saved entries and photographs as a print-friendly PDF.
 
@@ -53,7 +54,7 @@ Apply the initial schema:
 supabase db push
 ```
 
-Alternatively, run [`supabase/migrations/20260920000000_daymark.sql`](supabase/migrations/20260920000000_daymark.sql) in the Supabase SQL editor. It creates the journal schema, private image bucket, row-level security policies, lifecycle enforcement, and realtime image publication.
+Alternatively, run every migration in [`supabase/migrations/`](supabase/migrations/) in the Supabase SQL editor. They create the journal and marker schemas, private image bucket, row-level security policies, lifecycle enforcement, and realtime publications.
 
 ### 3. configure environment variables
 
@@ -77,7 +78,8 @@ In Supabase Dashboard → Authentication → URL Configuration:
 
 - Set the Site URL to `http://localhost:3000`.
 - Add `http://localhost:3000/auth/callback` as a Redirect URL.
-- In Authentication → Providers → Email, enable magic-link sign-in.
+- In Authentication → Providers → Email, enable Email/password sign-in and magic links.
+- Set password requirements appropriate for your users. Daymark requires a six-character minimum in its sign-up form.
 
 ### 5. start the app
 

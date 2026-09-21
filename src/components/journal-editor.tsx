@@ -4,10 +4,12 @@ import { useRef, useState } from "react";
 import { Camera, Check, ImagePlus, LockKeyhole, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { isComplete } from "@/lib/date-window";
+import { MarkerPicker } from "@/components/marker-picker";
+import type { Marker } from "@/lib/types";
 
-type Props = { date: string; initialBody?: string; initialImages?: string[]; editable: boolean };
+type Props = { date: string; initialBody?: string; initialImages?: string[]; markers?: Marker[]; selectedMarkerIds?: string[]; editable: boolean };
 
-export function JournalEditor({ date, initialBody = "", initialImages = [], editable }: Props) {
+export function JournalEditor({ date, initialBody = "", initialImages = [], markers = [], selectedMarkerIds = [], editable }: Props) {
   const [body, setBody] = useState(initialBody);
   const [images, setImages] = useState<{ url: string; name: string }[]>(initialImages.map((url, index) => ({ url, name: `Photo ${index + 1}` })));
   const [saved, setSaved] = useState(false);
@@ -41,6 +43,7 @@ export function JournalEditor({ date, initialBody = "", initialImages = [], edit
     <section className="paper-shadow mx-auto max-w-3xl rounded-[2rem] border border-[#e8e9e2] bg-white p-6 sm:p-12">
       <div className="flex items-start justify-between gap-4"><div><p className="label mb-2">Today&apos;s mark</p><h1 className="text-3xl font-semibold tracking-[-.065em] sm:text-4xl">{formattedDate}</h1></div><button className="icon-button focus-ring" aria-label="Entry options"><MoreHorizontal size={18}/></button></div>
       <textarea value={body} onChange={(event) => setBody(event.target.value)} placeholder="What will you want to remember about today?" className="focus-ring mt-10 min-h-[240px] w-full resize-none border-0 bg-transparent text-lg leading-8 outline-none placeholder:text-[#b6b8af]" aria-label="Journal entry"/>
+      <div className="mt-8 border-t border-[#e8e9e2] pt-7"><MarkerPicker markers={markers} selectedIds={selectedMarkerIds} date={date} editable={editable} compact/></div>
       <div className="mt-8 border-t border-[#e8e9e2] pt-7">
         <div className="mb-4 flex items-center justify-between"><div><p className="text-sm font-semibold">Three moments, or more.</p><p className="mt-1 text-sm text-[#787b72]">{images.length}/3 photos added</p></div><button onClick={() => input.current?.click()} className="focus-ring inline-flex items-center gap-2 rounded-full bg-[#f1f2ed] px-4 py-2 text-sm font-semibold"><ImagePlus size={16}/> Add photos</button><input ref={input} type="file" accept="image/*" multiple className="hidden" onChange={(event) => addFiles(event.target.files)}/></div>
         <div className="grid grid-cols-3 gap-3">{images.map((image, index) => <div key={image.url} className="group relative aspect-square overflow-hidden rounded-2xl bg-[#f1f2ed]"><Image src={image.url} alt={`Journal photo ${index + 1}`} fill unoptimized className="object-cover"/><button onClick={() => setImages((all) => all.filter((item) => item.url !== image.url))} className="absolute right-2 top-2 hidden h-8 w-8 place-items-center rounded-full bg-white/90 text-[#222420] group-hover:grid" aria-label={`Remove ${image.name}`}><Trash2 size={15}/></button></div>)}

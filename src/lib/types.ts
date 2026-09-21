@@ -13,7 +13,18 @@ export type JournalEntry = {
   body: string;
   status: EntryStatus;
   images: JournalImage[];
+  markers?: Marker[];
   updatedAt: string;
+};
+
+export type Marker = {
+  id: string;
+  name: string;
+  color: string;
+};
+
+export type EntryMarker = Marker & {
+  entryDate: string;
 };
 
 export type PairingSession = {
