@@ -1,0 +1,10 @@
+{
+  "name": "Daymark",
+  "short_name": "Daymark",
+  "description": "A private place for your days.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f3",
+  "theme_color": "#222420",
+  "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
+}
