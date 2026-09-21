@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Bell, Download, Sparkles } from "lucide-react";
+import { ArrowUpRight, Bell, Download, Settings, Sparkles } from "lucide-react";
 import { Calendar } from "@/components/calendar";
 import { Wordmark } from "@/components/brand";
 import { createClient } from "@/lib/supabase/server";
@@ -23,7 +23,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen px-4 py-4 sm:px-8 sm:py-8"><MobileRedirect/>
       <div className="mx-auto max-w-6xl">
-        <header className="mb-12 flex items-center justify-between"><Wordmark/><div className="flex items-center gap-2"><Link href="/export" className="icon-button focus-ring" aria-label="Export journal"><Download size={17}/></Link><AccountButton initial={name.charAt(0).toUpperCase()}/></div></header>
+        <header className="mb-12 flex items-center justify-between"><Wordmark/><div className="flex items-center gap-2"><Link href="/review" className="icon-button focus-ring" aria-label="Weekly review">↗</Link><Link href="/export" className="icon-button focus-ring" aria-label="Export journal"><Download size={17}/></Link><Link href="/settings" className="icon-button focus-ring" aria-label="Settings"><Settings size={17}/></Link><AccountButton initial={name.charAt(0).toUpperCase()}/></div></header>
         <section className="mb-10 grid gap-7 lg:grid-cols-[1fr_310px]">
           <div className="rounded-[2rem] bg-[#222420] px-7 py-9 text-white sm:px-10 sm:py-11">
             <p className="mb-7 flex items-center gap-2 text-sm text-white/55"><Sparkles size={15} className="text-[#d9f16d]"/> A quiet place for the days that matter.</p>

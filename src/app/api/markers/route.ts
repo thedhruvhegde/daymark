@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const colors = new Set(["#ef8f8b", "#f4b860", "#e7d769", "#b8d978", "#73cdb4", "#7eb9e7", "#a997e5", "#dc92bd"]);
+const isHexColor = (value: string) => /^#[0-9a-fA-F]{6}$/.test(value);
 
 export async function GET() {
   const supabase = await createClient();
@@ -15,7 +15,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const { name, color } = await request.json();
   const cleanName = typeof name === "string" ? name.trim() : "";
-  if (!cleanName || cleanName.length > 40 || typeof color !== "string" || !colors.has(color)) return NextResponse.json({ error: "Enter a valid name and color." }, { status: 400 });
+  if (!cleanName || cleanName.length > 40 || typeof color !== "string" || !isHexColor(color)) return NextResponse.json({ error: "Enter a valid name and color." }, { status: 400 });
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });

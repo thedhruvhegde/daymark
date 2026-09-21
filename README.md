@@ -17,6 +17,8 @@ Daymark is an open-source daily journal that makes reflection a small, repeatabl
 - **private by default** — Supabase row-level security and private storage scope every journal to its owner.
 - **markers that build consistency** — create reusable color-coded markers and see their dots across the calendar.
 - **phone photo companion** — sign in once on a phone to add photos and markers; QR pairing remains available as a quick alternative.
+- **daily signals** — keep lightweight tasks, mood, energy, and one small reflection beside each day.
+- **weekly review** — revisit writing, photos, marker consistency, tasks, and mood in one calm recap.
 - **a complete daily record** — pair unlimited writing with at least three square photographs.
 - **your archive, yours to keep** — export saved entries and photographs as a print-friendly PDF.
 
@@ -78,6 +80,7 @@ In Supabase Dashboard → Authentication → URL Configuration:
 
 - Set the Site URL to `http://localhost:3000`.
 - Add `http://localhost:3000/auth/callback` as a Redirect URL.
+- Add `http://localhost:3000/auth/reset` as a Redirect URL for password recovery.
 - In Authentication → Providers → Email, enable Email/password sign-in and magic links.
 - Set password requirements appropriate for your users. Daymark requires a six-character minimum in its sign-up form.
 
@@ -97,7 +100,7 @@ To deploy your own instance:
 
 1. Import the repository in Vercel.
 2. Add the three environment variables above to the Production environment.
-3. Add `https://your-domain.example/auth/callback` to Supabase Auth Redirect URLs.
+3. Add `https://your-domain.example/auth/callback` and `https://your-domain.example/auth/reset` to Supabase Auth Redirect URLs.
 4. Set `https://your-domain.example` as the Supabase Site URL.
 5. Disable Vercel Authentication / Deployment Protection if the phone companion should be available on personal devices.
 

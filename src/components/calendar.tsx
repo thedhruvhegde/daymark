@@ -31,7 +31,7 @@ export function Calendar({ entries, month = new Date() }: Props) {
           const current = isCurrentMonth && day === today.getDate();
           const past = new Date(`${key}T23:59:59`) < today;
           return <Link key={key} href={`/journal/${key}`} aria-label={`Open ${key}`} className={`focus-ring aspect-square rounded-2xl border p-2 transition sm:p-3 ${current ? "border-[#222420] bg-[#d9f16d]" : entry ? "border-[#e8e9e2] bg-[#f7f7f3] hover:border-[#222420]" : "border-transparent hover:border-[#e8e9e2]"} ${past && !entry ? "text-[#b6b8af]" : ""}`}>
-            <div className="flex h-full flex-col justify-between"><span className="text-sm font-medium">{day}</span><div className="flex min-h-2 flex-wrap gap-1">{entry?.markers?.slice(0, 4).map((marker) => <span key={marker.id} className="h-1.5 w-1.5 rounded-full" style={{ background: marker.color }} title={marker.name}/>) ?? null}{entry && !entry.markers?.length ? <span className={`h-1.5 w-1.5 rounded-full ${entry.status === "complete" ? "bg-[#222420]" : "bg-[#ffdf85]"}`} /> : null}{!entry && current ? <Plus size={15}/> : null}</div></div>
+            <div className="flex h-full flex-col justify-between"><span className="text-sm font-medium">{day}</span><div className="flex min-h-2.5 flex-wrap gap-1">{entry?.markers?.slice(0, 4).map((marker) => <span key={marker.id} className="h-2.5 w-2.5 rounded-full" style={{ background: marker.color }} title={marker.name}/>) ?? null}{entry && !entry.markers?.length ? <span className={`h-2.5 w-2.5 rounded-full ${entry.status === "complete" ? "bg-[#222420]" : "bg-[#ffdf85]"}`} /> : null}{!entry && current ? <Plus size={15}/> : null}</div></div>
           </Link>;
         })}
       </div>
